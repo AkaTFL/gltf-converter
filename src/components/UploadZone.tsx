@@ -73,10 +73,10 @@ export function UploadZone({ onFileLoad }: UploadZoneProps) {
       setIsDragging(false);
       const files = Array.from(e.dataTransfer.files);
       if (files.length > 0) {
-        void handleFile(files);
+        void handleFiles(files);
       }
     },
-    [handleFile]
+    [handleFiles]
   );
 
   return (

@@ -53,6 +53,19 @@ const Index = () => {
     setCodeModalOpen(true);
   }, [hitboxes]);
 
+  const handleToggleHitboxVisibility = useCallback((index: number) => {
+    setHitboxes((prev) =>
+      prev.map((hb, i) =>
+        i === index
+          ? {
+              ...hb,
+              visible: hb.visible === false,
+            }
+          : hb
+      )
+    );
+  }, []);
+
   return (
     <div className="flex h-screen flex-col">
       {/* Header */}
@@ -102,6 +115,7 @@ const Index = () => {
               onToggleModel={() => setShowModel((v) => !v)}
               onToggleHitboxes={() => setShowHitboxes((v) => !v)}
               onExportCode={handleExportCode}
+              onToggleHitboxVisibility={handleToggleHitboxVisibility}
             />
 
             {/* Re-upload */}

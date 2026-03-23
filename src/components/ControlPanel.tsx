@@ -14,6 +14,7 @@ interface ControlPanelProps {
   onToggleModel: () => void;
   onToggleHitboxes: () => void;
   onExportCode: () => void;
+  onToggleHitboxVisibility: (index: number) => void;
 }
 
 const typeOptions: { type: HitboxType; label: string; icon: React.ReactNode }[] = [
@@ -34,6 +35,7 @@ export function ControlPanel({
   onToggleModel,
   onToggleHitboxes,
   onExportCode,
+  onToggleHitboxVisibility,
 }: ControlPanelProps) {
   return (
     <div className="flex flex-col gap-5">
@@ -116,9 +118,22 @@ export function ControlPanel({
           </p>
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {hitboxes.map((hb, i) => (
-              <div key={i} className="flex items-center justify-between text-xs font-mono">
+              <div key={i} className="flex items-center justify-between gap-2 text-xs font-mono">
                 <span className="text-foreground truncate mr-2">{hb.name}</span>
-                <span className="text-primary/70 shrink-0">{hb.type}</span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => onToggleHitboxVisibility(i)}
+                    className={`rounded border px-2 py-1 transition-all ${
+                      hb.visible !== false
+                        ? "border-accent text-accent"
+                        : "border-border text-muted-foreground"
+                    }`}
+                    title={hb.visible !== false ? "Masquer" : "Afficher"}
+                  >
+                    {hb.visible !== false ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                  </button>
+                  <span className="text-primary/70">{hb.type}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -129,7 +144,7 @@ export function ControlPanel({
       {hitboxes.length > 0 && (
         <Button variant="outline" onClick={onExportCode} className="w-full font-mono text-xs uppercase tracking-wider">
           <Code className="h-4 w-4 mr-2" />
-          Exporter Code Rapier
+          Exporter Colliders Rapier
         </Button>
       )}
     </div>

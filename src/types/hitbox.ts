@@ -6,6 +6,7 @@ export interface HitboxData {
   type: HitboxType;
   name: string;
   position: [number, number, number];
+  visible?: boolean;
   size?: [number, number, number];
   radius?: number;
   geometry?: BufferGeometry;

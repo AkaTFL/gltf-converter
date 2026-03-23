@@ -43,6 +43,7 @@ export async function generateHitboxes(
               type: "box",
               name: mesh.name || `mesh_${meshIndex}`,
               position: [center.x, center.y, center.z],
+              visible: true,
               size: [size.x, size.y, size.z],
             });
           } else if (type === "sphere") {
@@ -54,6 +55,7 @@ export async function generateHitboxes(
               type: "sphere",
               name: mesh.name || `mesh_${meshIndex}`,
               position: [center.x, center.y, center.z],
+              visible: true,
               radius,
             });
           } else if (type === "trimesh") {
@@ -67,6 +69,7 @@ export async function generateHitboxes(
               type: "trimesh",
               name: mesh.name || `mesh_${meshIndex}`,
               position: [0, 0, 0],
+              visible: true,
               geometry: clonedGeo,
               vertices: posAttr.count,
               triangles: index ? index.count / 3 : posAttr.count / 3,
@@ -85,41 +88,51 @@ export async function generateHitboxes(
 }
 
 export function hitboxToRapierCode(hitboxes: HitboxData[]): string {
-  const lines: string[] = [
-    "import RAPIER from '@dimforge/rapier3d-compat';",
-    "",
-    "// Initialize Rapier",
-    "await RAPIER.init();",
-    "const gravity = { x: 0.0, y: -9.81, z: 0.0 };",
-    "const world = new RAPIER.World(gravity);",
-    "",
-  ];
+  return getColliderLines(hitboxes).join("\n");
+}
 
-  hitboxes.forEach((hb, i) => {
+function getColliderLines(hitboxes: HitboxData[]): string[] {
+  const normalizedHitboxes = ensureSingleColliderType(hitboxes);
+  const lines: string[] = [];
+
+  if (normalizedHitboxes.length === 0) {
+    return lines;
+  }
+
+  lines.push(`// Colliders type: ${normalizedHitboxes[0].type}`);
+  lines.push("");
+
+  normalizedHitboxes.forEach((hb, i) => {
     lines.push(`// Collider ${i}: ${hb.name} (${hb.type})`);
 
     if (hb.type === "box" && hb.size) {
       const [hx, hy, hz] = hb.size.map((s) => (s / 2).toFixed(4));
-      lines.push(`const bodyDesc${i} = RAPIER.RigidBodyDesc.fixed()`);
+      lines.push(
+        `const colliderDesc${i} = RAPIER.ColliderDesc.cuboid(${hx}, ${hy}, ${hz})`
+      );
       lines.push(`  .setTranslation(${hb.position.map((p) => p.toFixed(4)).join(", ")});`);
-      lines.push(`const body${i} = world.createRigidBody(bodyDesc${i});`);
-      lines.push(`const colliderDesc${i} = RAPIER.ColliderDesc.cuboid(${hx}, ${hy}, ${hz});`);
-      lines.push(`world.createCollider(colliderDesc${i}, body${i});`);
     } else if (hb.type === "sphere" && hb.radius) {
-      lines.push(`const bodyDesc${i} = RAPIER.RigidBodyDesc.fixed()`);
+      lines.push(
+        `const colliderDesc${i} = RAPIER.ColliderDesc.ball(${hb.radius.toFixed(4)})`
+      );
       lines.push(`  .setTranslation(${hb.position.map((p) => p.toFixed(4)).join(", ")});`);
-      lines.push(`const body${i} = world.createRigidBody(bodyDesc${i});`);
-      lines.push(`const colliderDesc${i} = RAPIER.ColliderDesc.ball(${hb.radius.toFixed(4)});`);
-      lines.push(`world.createCollider(colliderDesc${i}, body${i});`);
     } else if (hb.type === "trimesh") {
       lines.push(`// Trimesh collider - requires vertex/index arrays from geometry`);
       lines.push(`// vertices: ${hb.vertices}, triangles: ${hb.triangles}`);
       lines.push(`// const colliderDesc${i} = RAPIER.ColliderDesc.trimesh(vertices, indices);`);
-      lines.push(`// world.createCollider(colliderDesc${i});`);
     }
 
     lines.push("");
   });
 
-  return lines.join("\n");
+  return lines;
+}
+
+function ensureSingleColliderType(hitboxes: HitboxData[]): HitboxData[] {
+  if (hitboxes.length <= 1) {
+    return hitboxes;
+  }
+
+  const selectedType = hitboxes[0].type;
+  return hitboxes.filter((hb) => hb.type === selectedType);
 }

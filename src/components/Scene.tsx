@@ -26,7 +26,7 @@ export function Scene({ fileUrl, hitboxes, showModel, showHitboxes }: SceneProps
         {fileUrl && showModel && <GLTFModel url={fileUrl} />}
         {showHitboxes &&
           hitboxes.map((hb, i) => (
-            <HitboxMesh key={i} hitbox={hb} />
+            hb.visible !== false ? <HitboxMesh key={i} hitbox={hb} /> : null
           ))}
       </Suspense>
 
