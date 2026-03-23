@@ -10,7 +10,7 @@ export function GLTFModel({ url }: GLTFModelProps) {
 
   useEffect(() => {
     return () => {
-      useGLTF.preload(url);
+      useGLTF.clear(url);
     };
   }, [url]);
 

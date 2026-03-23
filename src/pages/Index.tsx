@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { UploadZone } from "@/components/UploadZone";
 import { Scene } from "@/components/Scene";
 import { ControlPanel } from "@/components/ControlPanel";
@@ -17,11 +17,21 @@ const Index = () => {
   const [showHitboxes, setShowHitboxes] = useState(true);
   const [codeModalOpen, setCodeModalOpen] = useState(false);
   const [generatedCode, setGeneratedCode] = useState("");
+  const cleanupRef = useRef<(() => void) | null>(null);
 
-  const handleFileLoad = useCallback((url: string, name: string) => {
+  const handleFileLoad = useCallback((url: string, name: string, cleanup: () => void) => {
+    cleanupRef.current?.();
+    cleanupRef.current = cleanup;
     setFileUrl(url);
     setFileName(name);
     setHitboxes([]);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      cleanupRef.current?.();
+      cleanupRef.current = null;
+    };
   }, []);
 
   const handleGenerate = useCallback(async () => {
@@ -97,6 +107,8 @@ const Index = () => {
             {/* Re-upload */}
             <button
               onClick={() => {
+                cleanupRef.current?.();
+                cleanupRef.current = null;
                 setFileUrl(null);
                 setFileName(null);
                 setHitboxes([]);
