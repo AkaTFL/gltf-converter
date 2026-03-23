@@ -1,11 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Box, Circle, Triangle, Eye, EyeOff, Code, Loader2 } from "lucide-react";
-import type { HitboxType, HitboxData } from "@/types/hitbox";
+import { Triangle, Eye, EyeOff, Code, Loader2 } from "lucide-react";
+import type { HitboxData } from "@/types/hitbox";
 
 interface ControlPanelProps {
   fileName: string | null;
-  hitboxType: HitboxType;
-  onTypeChange: (type: HitboxType) => void;
   onGenerate: () => void;
   generating: boolean;
   hitboxes: HitboxData[];
@@ -17,16 +15,8 @@ interface ControlPanelProps {
   onToggleHitboxVisibility: (index: number) => void;
 }
 
-const typeOptions: { type: HitboxType; label: string; icon: React.ReactNode }[] = [
-  { type: "box", label: "AABB Box", icon: <Box className="h-4 w-4" /> },
-  { type: "sphere", label: "Sphere", icon: <Circle className="h-4 w-4" /> },
-  { type: "trimesh", label: "Trimesh", icon: <Triangle className="h-4 w-4" /> },
-];
-
 export function ControlPanel({
   fileName,
-  hitboxType,
-  onTypeChange,
   onGenerate,
   generating,
   hitboxes,
@@ -49,28 +39,13 @@ export function ControlPanel({
         </div>
       )}
 
-      {/* Hitbox type selector */}
-      <div>
-        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider mb-3">
-          Type de Hitbox
-        </p>
-        <div className="flex gap-2">
-          {typeOptions.map((opt) => (
-            <button
-              key={opt.type}
-              onClick={() => onTypeChange(opt.type)}
-              className={`
-                flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-mono transition-all
-                ${hitboxType === opt.type
-                  ? "border-primary bg-primary/10 text-primary glow-primary"
-                  : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                }
-              `}
-            >
-              {opt.icon}
-              {opt.label}
-            </button>
-          ))}
+      {/* Trimesh type info */}
+      <div className="rounded-lg bg-card border border-border p-4">
+        <div className="flex items-center gap-2">
+          <Triangle className="h-4 w-4 text-primary" />
+          <p className="text-xs text-foreground font-mono uppercase tracking-wider">
+            Trimesh (Triangle Mesh)
+          </p>
         </div>
       </div>
 

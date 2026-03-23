@@ -10,7 +10,7 @@ import { Boxes } from "lucide-react";
 const Index = () => {
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
-  const [hitboxType, setHitboxType] = useState<HitboxType>("box");
+  const [hitboxType] = useState<HitboxType>("trimesh");
   const [hitboxes, setHitboxes] = useState<HitboxData[]>([]);
   const [generating, setGenerating] = useState(false);
   const [showModel, setShowModel] = useState(true);
@@ -105,8 +105,6 @@ const Index = () => {
           <aside className="w-72 shrink-0 border-l border-border bg-card/50 p-5 overflow-y-auto">
             <ControlPanel
               fileName={fileName}
-              hitboxType={hitboxType}
-              onTypeChange={setHitboxType}
               onGenerate={handleGenerate}
               generating={generating}
               hitboxes={hitboxes}
