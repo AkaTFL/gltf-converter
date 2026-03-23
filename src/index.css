@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 7%;
+    --foreground: 180 10% 90%;
+
+    --card: 220 18% 10%;
+    --card-foreground: 180 10% 90%;
+
+    --popover: 220 18% 10%;
+    --popover-foreground: 180 10% 90%;
+
+    --primary: 180 100% 50%;
+    --primary-foreground: 220 20% 7%;
+
+    --secondary: 220 15% 16%;
+    --secondary-foreground: 180 10% 85%;
+
+    --muted: 220 15% 14%;
+    --muted-foreground: 220 10% 55%;
+
+    --accent: 160 100% 45%;
+    --accent-foreground: 220 20% 7%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 180 100% 50%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 220 18% 10%;
+    --sidebar-foreground: 180 10% 90%;
+    --sidebar-primary: 180 100% 50%;
+    --sidebar-primary-foreground: 220 20% 7%;
+    --sidebar-accent: 220 15% 16%;
+    --sidebar-accent-foreground: 180 10% 85%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 180 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+.glow-primary {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+.glow-accent {
+  box-shadow: 0 0 20px rgba(0, 230, 140, 0.3);
+}
+.text-glow {
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
